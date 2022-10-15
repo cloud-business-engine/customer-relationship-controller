@@ -2,11 +2,12 @@ package api
 
 import (
 	"fmt"
-	"github.com/cloud-business-engine/customer-relationship-controller/internal/app"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/cloud-business-engine/customer-relationship-controller/internal/app"
 )
 
 func SetupHandlers(engine *gin.Engine) {
@@ -19,6 +20,6 @@ func GetTime(ctx *gin.Context) {
 		"time":       time.Now().Format(time.RFC3339),
 		"host_ip":    ctx.Request.Host,
 	}
-	fmt.Println(responsePayload)
+	fmt.Println(responsePayload) //nolint:forbidigo
 	ctx.JSON(http.StatusOK, responsePayload)
 }
