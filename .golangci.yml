@@ -1,0 +1,326 @@
+run:
+  go: '1.18'
+
+  # If set we pass it to "go list -mod={option}". From "go help modules":
+  # If invoked with -mod=readonly, the go command is disallowed from the implicit
+  # automatic updating of go.mod described above. Instead, it fails when any changes
+  # to go.mod are needed. This setting is most useful to check that go.mod does
+  # not need updates, such as in a continuous integration and testing system.
+  # If invoked with -mod=vendor, the go command assumes that the vendor
+  # directory holds the correct copies of dependencies and ignores
+  # the dependency descriptions in go.mod.
+  #
+  # Allowed values: readonly|vendor|mod
+  # By default, it isn't set.
+  modules-download-mode: mod
+
+# https://golangci-lint.run/usage/linters/#enabled-by-default-linters
+linters:
+  # Disable all linters.
+  disable-all: true
+
+  # Enable specific linter
+  # TODO: check configs
+  enable:
+    # It is a very simple utility which detects unused declarations in a Go package.
+    - deadcode
+    # It is a program for checking for unchecked errors in go programs.
+    # These unchecked errors can be critical bugs in some cases
+    - errcheck
+    # Linter for Go source code that specializes in simplifying a code
+    - gosimple
+    # Vet examines Go source code and reports suspicious constructs,
+    # such as Printf calls whose arguments do not align with the format string
+    - govet
+    # Detects when assignments to existing variables are not used
+    - ineffassign
+    # It is a go vet on steroids, applying a ton of static analysis checks
+    - staticcheck
+    # Finds unused struct fields
+    - structcheck
+    # Like the front-end of a Go compiler, parses and type-checks Go code           Что это значит ??????
+    - typecheck
+    # Checks Go code for unused constants, variables, functions and types
+    - unused
+    # Finds unused global variables and constants
+    - varcheck
+    # Finds commonly misspelled English words in comments (and fix it if --fix passed)
+    - misspell
+    # Check if comments end with a dot and each sentence starts with a capital letter (and fix it if --fix passed)
+    - godot
+    # Remove unnecessary type conversions
+    - unconvert
+    # Checks whether code was gofmt-ed.
+    - gofmt
+    # Checks function and package cyclomatic complexity
+    - cyclop
+    # Tool for code clone detection
+    - dupl
+    # Check for two durations multiplied together
+    - durationcheck
+    # Check types passed to the json encoding functions.
+    # Reports unsupported types and optionally reports occasions, where the check for the returned error can be omitted.
+    - errchkjson
+    # Checks that sentinel errors are prefixed with Err and error types are suffixed with the Error.
+    - errname
+    # It is a linter for that can be used to find code that will cause problems
+    # with the error wrapping scheme introduced in Go 1.13.
+    - errorlint
+    # Checks exhaustiveness of enum switch statements
+    - exhaustive
+    # Forbids identifiers
+    - forbidigo
+    # Finds type assertions which did as force
+    - forcetypeassert
+    # Tool for detection of long functions
+    - funlen
+    # Controls golang package import order and makes it always deterministic
+    - gci
+    # Checks that no inits functions are present in Go code
+    - gochecknoinits
+    # Computes and checks the cognitive complexity of functions
+    - gocognit
+    # Finds repeated strings that could be replaced by a constant
+    - goconst
+    # Provides diagnostics that check for bugs, performance and style issues
+    - gocritic  # TODO: remove maybe or config
+    # Check if comments end with a dot and each sentence starts with a capital letter
+    - godot
+    # An analyzer to detect magic numbers
+    - gomnd
+    # Checks that printf-like functions are named with f at the end
+    - goprintffuncname
+    # Inspects source code for security problems
+    - gosec
+    # An analyzer to analyze expression groups
+    - grouper
+    # Checks that your code uses short syntax for if-statements whenever possible
+    - ifshort
+    # Accept Interfaces, Return Concrete Types
+    - ireturn
+    # Reports long lines
+    - lll
+    # Find slice declarations that are not initialized with zero length and later used with append
+    - makezero
+    # Finds naked returns in functions greater than a specified function length
+    - nakedret
+    # Finds the code that returns nil even if it checks that the error is not nil
+    - nilerr
+    # Checks that there is no simultaneous return of nil error and an invalid value
+    - nilnil
+    # Finds ill-formed or insufficiently explained // nolint directives
+    - nolintlint
+    # Finds code that shadows one of Go's predeclared identifiers
+    - predeclared
+    # Check Prometheus metrics naming via prometheus lint
+    - promlinter
+    # Checks whether Err of rows is checked successfully
+    - rowserrcheck
+    # Checks for pointers to enclosing loop variables
+    - exportloopref
+    # Checks that sql.Rows and sql.Stmt are closed
+    - sqlclosecheck
+    # Analyzer that detects using os.Setenv instead of t.Setenv since Go1.17
+    - tenv
+    # Linter that makes you use a separate _test package
+    - testpackage
+    # Detects test helpers without t.Helper() call and checks the consistency of test helpers
+    - thelper
+    # Detects inappropriate usage of t.Parallel() method in your Go test codes
+    - tparallel
+    # Reports unused function parameters
+    - unparam
+    - varnamelen
+    # Finds wasted assignment statements
+    - wastedassign
+    # Tool for detection of leading and trailing whitespace
+    - whitespace
+    # Checks that errors returned from external packages are wrapped
+    - wrapcheck
+
+linters-settings:
+  errcheck:
+    # Follow errchkjson setting below to understand why
+    exclude-functions:
+      - encoding/json.Marshal
+      - encoding/json.MarshalIndent
+    ignore: github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema:ForceNew|Set,fmt:.*,io:Close,github.com/yandex-cloud/terraform-provider-yandex/yandex:Set
+    # TODO: ignore?
+
+  govet:
+    disable:
+      - copylocks
+
+  ireturn:
+    # ireturn allows using `allow` and `reject` settings at the same time.
+    # Both settings are lists of the keywords and regular expressions matched to interface or package names.
+    # keywords:
+    # - `empty` for `interface{}`
+    # - `error` for errors
+    # - `stdlib` for standard library
+    # - `anon` for anonymous interfaces
+
+    # By default, it allows using errors, empty interfaces, anonymous interfaces,
+    # and interfaces provided by the standard library.
+    allow:
+      - anon
+      - error
+      - empty
+      - stdlib
+      - app.AccessToken
+
+  godot:
+    # Comments to be checked: `declarations`, `toplevel`, or `all`.
+    # Default: declarations
+    scope: all
+
+  cyclop:
+    # The maximal code complexity to report.
+    # Default: 10
+    max-complexity: 7
+    # The maximal average package complexity.
+    # If it's higher than 0.0 (float) the check is enabled
+    # Default: 0.0
+    package-average: 7
+
+  lll:
+    # Max line length, lines longer will be reported.
+    # '\t' is counted as 1 character by default, and can be changed with the tab-width option.
+    # Default: 120.
+    line-length: 99
+    # Tab width in spaces.
+    # Default: 1
+    tab-width: 1
+
+  varnamelen:
+    # Optional list of variable names that should be ignored completely.
+    # Default: []
+    ignore-names:
+      - i
+      - j
+      - id
+      - err
+      - db
+      - DB
+      - tx
+
+  gomnd:
+    # List of enabled checks, see https://github.com/tommy-muehle/go-mnd/#checks for description.
+    checks:
+      - argument
+      - case
+      - condition
+      - return
+
+  dupl:
+    # Tokens count to trigger issue.
+    # Default: 150
+    threshold: 100
+
+  gci:
+    # Checks that no prefix Comments(comment lines above an import) are present.
+    # Default: false
+    no-prefix-comments: true
+    # Section configuration to compare against.
+    # Section names are case-insensitive and may contain parameters in ().
+    # Default: ["standard", "default"]
+    sections:
+      - standard # Captures all standard packages if they do not match another section.
+      - default # Contains all imports that could not be matched to another section type.
+      # Groups all imports with the specified Prefix.
+      - prefix(github.com/cloud-business-engine/customer-relationship-controller)
+
+  errchkjson:
+    # With check-error-free-encoding set to true, errchkjson does warn about errors
+    # from json encoding functions that are safe to be ignored,
+    # because they are not possible to happen.
+    #
+    # if check-error-free-encoding is set to true and errcheck linter is enabled,
+    # it is recommended to add the following exceptions to prevent from false positives:
+    #
+    #     linters-settings:
+    #       errcheck:
+    #         exclude-functions:
+    #           - encoding/json.Marshal
+    #           - encoding/json.MarshalIndent
+    #
+    # Default: false
+    check-error-free-encoding: true
+    # Issue on struct encoding that doesn't have exported fields.
+    # Default: false
+    report-no-exported: true
+
+  exhaustive:
+    # Presence of "default" case in switch statements satisfies exhaustiveness,
+    # even if all enum members are not listed.
+    # Default: false
+    default-signifies-exhaustive: true
+
+  forbidigo:
+    # Forbid the following identifiers (list of regexp).
+    forbid:
+      - ^print.*$  # TODO: fill
+      - 'fmt\.Print.*'
+
+  funlen:
+    # Checks the number of lines in a function.
+    # If lower than 0, disable the check.
+    # Default: 60.
+    lines: 60
+    # Checks the number of statements in a function.
+    # If lower than 0, disable the check.
+    # Default: 40.
+    statements: 40
+
+  gocognit:
+    # Minimal code complexity to report
+    # Default: 30 (but we recommend 10-20)
+    min-complexity: 15
+
+  goconst:
+    # Minimal length of string constant.
+    # Default: 3
+    min-len: 2
+    # Minimum occurrences of constant string count to trigger issue.
+    # Default: 3
+    min-occurrences: 2
+    # Search also for duplicated numbers.
+    # Default: false
+    numbers: true
+
+  grouper:
+    # Require the use of grouped global 'const' declarations.
+    # Default: false
+    const-require-grouping: true
+
+  nakedret:
+    # Make an issue if func has more lines of code than this setting, and it has naked returns.
+    # Default: 30
+    max-func-lines: 20
+
+  nolintlint:
+    # Enable to require nolint directives to mention the specific linter being suppressed.
+    # Default: false
+    require-specific: true
+
+  promlinter:
+    # Prom linter cannot infer all metrics name in static analysis.
+    # Enable strict mode will also include the errors caused by failing to parse the args.
+    # Default: false
+    strict: true
+
+  tenv:
+    # The option `all` will run against whole test files (`_test.go`) regardless of method/function signatures.
+    # By default, only methods that take `*testing.T`, `*testing.B`, and `testing.TB` as arguments are checked.
+    all: true
+
+issues:
+  # Maximum issues count per one linter.
+  # Set to 0 to disable.
+  # Default: 50
+  max-per-linter: 0
+
+  # Maximum count of issues with the same text.
+  # Set to 0 to disable.
+  # Default: 3
+  max-same-issues: 0
