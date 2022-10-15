@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+	"github.com/cloud-business-engine/customer-relationship-controller/internal/app"
 	"net/http"
 	"time"
 
@@ -13,7 +15,10 @@ func SetupHandlers(engine *gin.Engine) {
 
 func GetTime(ctx *gin.Context) {
 	responsePayload := map[string]string{
-		"time": time.Now().Format(time.RFC3339),
+		"request_id": app.GetRequestID(ctx.Request.Context()).String(),
+		"time":       time.Now().Format(time.RFC3339),
+		"host_ip":    ctx.Request.Host,
 	}
+	fmt.Println(responsePayload)
 	ctx.JSON(http.StatusOK, responsePayload)
 }
