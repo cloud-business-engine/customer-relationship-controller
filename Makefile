@@ -4,7 +4,6 @@ VERSION := $(shell git describe --tags `git rev-list --tags --max-count=1`)
 REPORTS=.reports
 IMAGE_NAME=$(PROJECT)
 
-SSH_KEY_PATH := $(HOME)/.ssh/id_rsa
 MODULE := $(shell awk 'NR==1{print $$2}' go.mod)
 
 $(REPORTS):
@@ -33,7 +32,6 @@ mock:
 
 docker-image:
 	DOCKER_BUILDKIT=1 docker build . \
-		--ssh default=$(SSH_KEY_PATH) \
 		--tag $(IMAGE_NAME) \
 		--pull \
 		--no-cache
